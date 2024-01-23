@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "engines": {
-    "node": "16"
-  },
   "scripts": {
     "start": "nodemon app.js"
   },

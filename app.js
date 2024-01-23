@@ -14,7 +14,7 @@ mongoose.connect(process.env.DB_URL, {
   useUnifiedTopology: true,
 });
 const db = mongoose.connection;
-db.on("error", (err) => console.error(error));
+db.on("error", (err) => console.error(err));
 db.on("open", () => console.log("Connected to DB!"));
 
 //MIDDLEWARE
@@ -66,6 +66,7 @@ app.post("/register", async (req, res) => {
 app.get("/id/:id", async (req, res) => {
   try {
     const id = await User.findById({ _id: req.params.id });
+    console.log(id);
     res.status(200).json(id);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -73,14 +74,13 @@ app.get("/id/:id", async (req, res) => {
 });
 
 app.patch("/update/:id", async (req, res) => {
-  if (req.body.name == null)
-    return res.json({ message: "Couldn't update null type'" });
+  console.log(req.body);
+  if (req.body.email) return res.json({ message: "Not Allowed" });
   try {
-    const updated = await User.updateOne(
-      { _id: req.params.id },
-      { $set: { name: req.body.name } }
-    );
-    res.status(200).send("Updated");
+    const updated = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    return res.status(200).json(updated);
   } catch (err) {
     res.status(400).json({ message: "Error while updating!" });
   }
